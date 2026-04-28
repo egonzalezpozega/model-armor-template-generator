@@ -59,6 +59,8 @@ def get_user_choices():
         print("2. Advanced (Use inspection template)")
         dtype = input("Enter choice (1-2) [Default: 1]: ")
         choices['sdp_type'] = dtype if dtype in ['1', '2'] else '1'
+        if choices['sdp_type'] == '2':
+            choices['inspect_template'] = input("Enter inspect template path (projects/projectId/locations/locationID/inspectTemplates/templateId): ").strip()
         
     # RAI
     print("\n--- Responsible AI ---")
@@ -173,10 +175,10 @@ def run_workflow():
                 )
             )
         else:
-            print("Note: Advanced SDP requires an inspection template. Defaulting to basic enable.")
+            inspect_template = choices.get('inspect_template')
             sdp_settings = modelarmor_v1.SdpFilterSettings(
-                basic_config=modelarmor_v1.SdpBasicConfig(
-                    filter_enforcement=modelarmor_v1.SdpBasicConfig.SdpBasicConfigEnforcement.ENABLED
+                advanced_config=modelarmor_v1.SdpAdvancedConfig(
+                    inspect_template=inspect_template
                 )
             )
             
